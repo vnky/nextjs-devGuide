@@ -1,40 +1,134 @@
 # nextjs-devGuide
 
-Next.js concepts demo — routing, streaming, APIs, and more.
+Hands-on [Next.js](https://nextjs.org) 16 examples — routing, layouts, APIs, streaming, Server Actions, and file conventions. Use each page as a reference while you build.
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+**Repository:** [github.com/vnky/nextjs-devGuide](https://github.com/vnky/nextjs-devGuide)
 
-## Getting Started
+---
 
-First, run the development server:
+## Stack
+
+| Layer | Choice |
+|--------|--------|
+| Framework | Next.js 16 (App Router) |
+| UI | React 19, Tailwind CSS 4 |
+| Fonts | Geist (`next/font`) |
+| Mock API (posts) | [json-server](https://github.com/typicode/json-server) on port **3001** |
+
+---
+
+## Getting started
+
+### 1. Install and run Next.js
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Posts demo (optional — requires json-server)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+In a **second terminal**:
 
-## Learn More
+```bash
+npm run json-server
+```
 
-To learn more about Next.js, take a look at the following resources:
+Then visit [http://localhost:3000/posts](http://localhost:3000/posts).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Data lives in `db.json`. Override the API URL with `JSON_SERVER_URL` if needed (default: `http://localhost:3001`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Other scripts
 
-## Deploy on Vercel
+| Command | Purpose |
+|---------|---------|
+| `npm run build` | Production build |
+| `npm run start` | Run production server |
+| `npm run lint` | ESLint |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Topics & routes
+
+| Topic | Route | What to look at |
+|--------|--------|------------------|
+| **Home** | `/` | Marketing-style landing, shared header/footer |
+| **About** | `/about` | Static page, page metadata |
+| **Services** | `/services` | Route group `(marketing)` — folder name omitted from URL |
+| **Dynamic slug** | `/topics/getting-started`, `/topics/deployment` | Single segment: `app/topics/[slug]/page.tsx`, `generateStaticParams` |
+| **Catch-all slug** | `/guide/intro`, `/guide/setup/env`, `/guide/hello` | Multi-segment: `app/guide/[...slug]/page.tsx`, dynamic fallback for unknown paths |
+| **Streaming** | `/streaming` | `Suspense` + async Server Components; staggered `GET /api/stream/{fast\|medium\|slow}` |
+| **Server Actions & forms** | `/posts` | `app/actions.ts` → `createPost`; form `action={createPost}`; json-server POST |
+| **Sample API** | `/api/test` | Route Handler: `app/api/test/route.ts` |
+
+---
+
+## Concepts covered
+
+### Routing & pages
+
+- **App Router** file conventions (`page.tsx`, `layout.tsx`)
+- **Static routes** — `app/about/page.tsx`, `app/page.tsx`
+- **Route groups** — `app/(marketing)/services/page.tsx` → URL `/services`
+- **Dynamic `[slug]`** — one URL segment (`/topics/[slug]`)
+- **Catch-all `[...slug]`** — many segments (`/guide/a/b/c`)
+- **Metadata** — `export const metadata` / `generateMetadata`
+
+### UI & organization
+
+- **Shared layout chrome** — `app/components/site-header.tsx`, `site-footer.tsx`
+- **Private folders** — `app/_shared/` (leading `_` — not part of the URL; safe for components/utils)
+- **Path alias** — `@/*` → project root (`tsconfig.json`)
+
+### Data & server
+
+- **Route Handlers** — REST-style APIs under `app/api/`
+- **Server Components** — async pages, server-side `fetch`
+- **Streaming** — multiple `Suspense` boundaries; UI replaces skeletons as data arrives
+- **Server Actions** — `"use server"` in `app/actions.ts`; forms post via `createPost(formData)`
+- **Cache revalidation** — `revalidatePath("/posts")` after creating a post
+- **json-server** — local REST backend for the posts CRUD demo
+
+### Linking & navigation
+
+- **`next/link`** — client navigation between routes
+- Cross-links between topics, guide, services, and home (see topic page actions)
+
+---
+
+## Project layout (high level)
+
+```
+app/
+├── page.tsx                 # Home
+├── layout.tsx               # Root layout + fonts
+├── actions.ts               # Server Actions (createPost)
+├── about/page.tsx
+├── posts/page.tsx           # Server Action form + post list
+├── streaming/               # Streaming demo
+├── topics/[slug]/           # Dynamic route
+├── guide/[...slug]/         # Catch-all route
+├── (marketing)/services/    # Route group
+├── api/                     # Route Handlers
+├── components/              # Shared UI
+├── _shared/                 # Private folder (not routed)
+└── lib/                     # Helpers, demo data, json-server client
+
+db.json                      # json-server database (posts)
+```
+
+---
+
+## Learn more
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)
+- [Deploy on Vercel](https://nextjs.org/docs/app/building-your-application/deploying)
+
+---
+
+## License
+
+Private learning repo — use and adapt as you like.

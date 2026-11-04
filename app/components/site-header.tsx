@@ -29,6 +29,9 @@ export function SiteHeader() {
           <Link href="/streaming" className={navLinkClass}>
             Streaming
           </Link>
+          <Link href="/posts" className={navLinkClass}>
+            Posts
+          </Link>
           <Link href="/services" className={navLinkClass}>
             Services
           </Link>

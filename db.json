@@ -1,0 +1,14 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "Welcome",
+      "content": "Seed post from db.json — add more with the form below."
+    },
+    {
+      "title": "Vnkhy",
+      "content": "vnky content",
+      "id": 2
+    }
+  ]
+}
