@@ -22,11 +22,16 @@ export default defineConfig({
         : 0,
     },
   },
+  // Each entry = one browser; tests run once per project.
+  // Run all:  npm run test:e2e
+  // Run one:  npx playwright test --project=chromium
   projects: [
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
+    { name: "firefox", use: { ...devices["Desktop Firefox"] } },
+    { name: "webkit", use: { ...devices["Desktop Safari"] } },
   ],
   webServer: [
     {

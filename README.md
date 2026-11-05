@@ -128,6 +128,38 @@ find test-results -name "home-page.png"
 - **Local**: headed browser, trace on, video on (CI uses headless + retries)
 - **Docs**: [Playwright Test](https://playwright.dev/docs/intro)
 
+### Which browsers run?
+
+**File:** `playwright.config.ts` → **`projects`** array.
+
+Each project is one browser. This repo currently defines **Chromium only**:
+
+```ts
+projects: [
+  { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+],
+```
+
+| Goal | How |
+|------|-----|
+| Run configured browser(s) | `npm run test:e2e` |
+| Run **one** browser only | `npx playwright test --project=chromium` |
+| Run **all** major browsers | Add `firefox` and `webkit` projects in config (see commented lines), then `npx playwright install` |
+
+Example — test in every browser (after `npx playwright install`):
+
+```ts
+projects: [
+  { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+  { name: "firefox", use: { ...devices["Desktop Firefox"] } },
+  { name: "webkit", use: { ...devices["Desktop Safari"] } },
+],
+```
+
+Shared settings (`baseURL`, `headless`, trace, video) live under top-level **`use`** in the same file. Per-browser overrides go inside each project’s **`use`**.
+
+Install browser binaries: `npx playwright install` (all) or `npx playwright install firefox webkit`.
+
 ---
 
 ## Topics & routes
